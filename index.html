@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal expense</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="amount"></h1>
+    <label for="inputAmount">Spent</label>
+    <input type="text" id="inputAmount">
+    <label for="inputDesc">For</label>
+    <input type="text" id="inputDesc">
+    <button id="btnAddExpense">+</button>
+    <button id="clearAll">Clear</button>
+    <div id="expenseTable"></div>
+
+    <script>
+        // ref to input description element
+        const inputDesc = document.querySelector("#inputDesc");
+
+        // ref to H1 element
+        const displayValue = document.querySelector("#amount");
+
+        // ref to table div
+        const expenseTable = document.querySelector("#expenseTable");
+
+        // ref to input amount element
+        const inputElement = document.querySelector("#inputAmount");
+
+        // ref to btn add expense
+        const element = document.querySelector("#btnAddExpense");
+
+        // ref tko clear btn
+        const clearEvent = document.querySelector("#clearAll");
+
+        // init totalExpense to zero.
+        let totalExpense = 0;
+
+        // initializing display value to total expense
+        displayValue.textContent = totalExpense;
+
+        // Initializing expense array
+        const expenseArray = [];
+
+        // on btn click add inputAmount to totalAmount 
+        function addExpenseToTotal() {
+
+            const textAmount = inputElement.value;
+            const textDesc = inputDesc.value;
+
+            let expenseObj = {};
+            expenseObj.amount = textAmount;
+            expenseObj.desc = textDesc;
+
+            expenseArray.push(expenseObj);
+
+            const expense = parseInt(textAmount, 10);
+
+            totalExpense += expense;
+
+            const disp = `Total: ${totalExpense}`
+            displayValue.textContent = disp;
+
+
+            const allExpenseHTML = expenseArray.map(expense => {
+                return `<div>${expense.desc} :: ${expense.amount}</div>`
+            });
+
+            const joinedExpenseHTML = allExpenseHTML.join("");
+
+            console.log(joinedExpenseHTML);
+
+            expenseTable.innerHTML = joinedExpenseHTML;
+
+        }
+
+        // on btn click clear all contents from the screen and console
+        function clearALL() {
+            displayValue.textContent = "0";
+            inputElement.textContent = " ";
+            inputDesc.textContent = " ";
+            console.clear();
+        }
+
+        // listen to click event
+        element.addEventListener("click", addExpenseToTotal, false);
+        clearEvent.addEventListener("click", clearALL, false);
+    </script>
+</body>
+
+</html>
