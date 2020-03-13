@@ -68,6 +68,7 @@
         // Initializing expense array
         let expenseArray = [];
 
+
         //diplay total function
         function displayTotal(amount) {
             const disp = `Total: ${amount}`
@@ -93,6 +94,7 @@
             const expense = parseInt(textAmount, 10);
 
             totalExpense += expense;
+            // totalExpense -= totalSpent[totalSpent.length - 1];
 
             displayTotal(totalExpense);
 
@@ -127,9 +129,9 @@
 
             const newArr = expenseArray.filter(expense => expense.moment.valueOf() !== dateValue);
 
-            const reducer = (accumilator, currentValue) => accumilator + currentValue.amount;
+            totalSpent = newArr.map(expense => totalSpent += parseInt(expense.amount, 10));
 
-            totalSpent = newArr.map(expense => totalSpent += parseInt(expense.amount));
+            console.log(totalSpent);
 
             renderList(newArr);
             if (totalSpent[totalSpent.length - 1]) {
@@ -139,9 +141,9 @@
                 displayTotal(totalSpent);
             }
             expenseArray = newArr;
+            totalExpense = totalSpent[totalSpent.length - 1]
+
         }
-
-
 
 
         // view layer function
