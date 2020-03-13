@@ -37,7 +37,6 @@
 
         <ul id="expenseTable" class="list-group"></ul>
 
-        <button type="button" class="btn btn-outline-danger d-flex flex-column" style="margin-top: 12px" id="clearAll">Clear</button>
     </div>
 
     <script>
@@ -102,6 +101,9 @@
 
             renderList(expenseArray);
 
+            inputElement.value = '';
+            inputDesc.value = '';
+
 
         }
         // controller functions
@@ -116,7 +118,7 @@
         }
 
         // delete function
-        // let searchArray = expenseArray;
+
 
         function deleteItem(dateValue) {
             let totalSpent = 0;
@@ -188,13 +190,7 @@
 
 
 
-        // on btn click clear all contents from the screen and console
-        function clearALL() {
-            displayValue.textContent = "0";
-            inputElement.textContent = " ";
-            inputDesc.textContent = " ";
-            console.clear();
-        }
+
 
         // listen to click event
         element.addEventListener("click", addExpenseToTotal, false);
