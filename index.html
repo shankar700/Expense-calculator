@@ -5,27 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal expense</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-    </style>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/b09ba867dc.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <h1 id="amount"></h1>
-    <label for="inputAmount">Spent</label>
-    <input type="text" id="inputAmount">
-    <label for="inputDesc">For</label>
-    <input type="text" id="inputDesc">
-    <button id="btnAddExpense">+</button>
-    <button id="clearAll">Clear</button>
-    <div id="expenseTable"></div>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">X-penz</a>
+        <a class="navbar-brand" href="#" id="amount"></a>
+    </nav>
+
+    <div class="container-fluid bg-light jumbotron bg-light" style="height:100vh">
+
+        <div class="input-group mb-3">
+
+            <input type="text" class="form-control" placeholder="Amount spent" id="inputAmount" aria-label="Amount spent" aria-describedby="Spent in rupee">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon1">₹</span>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">@</span>
+            </div>
+            <input type="text" id="inputDesc" class="form-control" placeholder="Spent on" aria-label="Spent for" aria-describedby="spent for">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btnAddExpense">Add</button>
+            </div>
+        </div>
+
+        <ul id="expenseTable" class="list-group"></ul>
+
+        <button type="button" class="btn btn-outline-danger d-flex flex-column" style="margin-top: 12px" id="clearAll">Clear</button>
+    </div>
 
     <script>
         // ref to input description element
@@ -53,7 +66,13 @@
         displayValue.textContent = totalExpense;
 
         // Initializing expense array
-        const expenseArray = [];
+        let expenseArray = [];
+
+        //diplay total function
+        function displayTotal(amount) {
+            const disp = `Total: ${amount}`
+            displayValue.textContent = disp;
+        }
 
         // on btn click add inputAmount to totalAmount 
         function addExpenseToTotal() {
@@ -61,9 +80,13 @@
             const textAmount = inputElement.value;
             const textDesc = inputDesc.value;
 
+            // create an object
             let expenseObj = {};
+
+            // add items to object
             expenseObj.amount = textAmount;
             expenseObj.desc = textDesc;
+            expenseObj.moment = new Date();
 
             expenseArray.push(expenseObj);
 
@@ -71,21 +94,97 @@
 
             totalExpense += expense;
 
-            const disp = `Total: ${totalExpense}`
-            displayValue.textContent = disp;
+            displayTotal(totalExpense);
 
 
-            const allExpenseHTML = expenseArray.map(expense => {
-                return `<div>${expense.desc} :: ${expense.amount}</div>`
-            });
 
-            const joinedExpenseHTML = allExpenseHTML.join("");
+            renderList(expenseArray);
 
-            console.log(joinedExpenseHTML);
+
+        }
+        // controller functions
+
+        // to get date string
+        function getDateString(moment) {
+            return (moment.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+        }
+
+        // delete function
+        // let searchArray = expenseArray;
+
+        function deleteItem(dateValue) {
+            let totalSpent = 0;
+
+            // const newArr = expenseArray.filter(expense => {
+            //     if (expense.moment.valueOf() !== dateValue) {
+            //         return expense;
+            //     }
+            // });
+
+            const newArr = expenseArray.filter(expense => expense.moment.valueOf() !== dateValue);
+
+            const reducer = (accumilator, currentValue) => accumilator + currentValue.amount;
+
+            totalSpent = newArr.map(expense => totalSpent += parseInt(expense.amount));
+
+            renderList(newArr);
+            if (totalSpent[totalSpent.length - 1]) {
+                displayTotal(totalSpent[totalSpent.length - 1]);
+            } else {
+                let totalSpent = 0;
+                displayTotal(totalSpent);
+            }
+            expenseArray = newArr;
+        }
+
+
+
+
+        // view layer function
+
+        function renderList(arrOfList) {
+            const allExpenseHTML = arrOfList.map(expense => createItemHTML(expense));
+
+            joinedExpenseHTML = allExpenseHTML.join("");
 
             expenseTable.innerHTML = joinedExpenseHTML;
 
         }
+
+
+
+        function createItemHTML({
+            desc,
+            amount,
+            moment
+        }) {
+
+            return `<li class="list-group-item d-flex justify-content-between">
+                            <div class="d-flex flex-column">
+                                ${desc}
+                                <small class="tect-muted">${getDateString(moment)}</small>  
+                            </div>
+                            <div>
+                                <span class="px-5">   
+                                    ${amount}
+                                </span>
+                                <button 
+                                type="button" 
+                                class="btn btn-outline-danger"
+                                onclick="deleteItem(${moment.valueOf()})"
+                                >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                        </li>`
+        }
+
+
+
+
 
         // on btn click clear all contents from the screen and console
         function clearALL() {
