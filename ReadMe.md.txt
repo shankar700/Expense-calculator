@@ -1,0 +1,1 @@
+This is an app developed using htm javascript and bootstrap to calculate daily expenses.
